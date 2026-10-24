@@ -1,12 +1,16 @@
 # SpenceCom — Business and Website Blueprint
 
-Version 1.0 | 25 October 2026 | Planning baseline
+Version 1.1 | 25 October 2026 | Teal identity selected
 
 ## 1. Brand and purpose
 
 Working brand: **SpenceCom**
 Business descriptor: **Smart Workplace & Network Solutions**
-Tagline: **Smart Networks. Smarter Workplaces.**
+Logo supporting lines: **International Standards. Smart Workplace Solutions.**
+
+Campaign tagline: **Smart Networks. Smarter Workplaces.**
+
+Approved visual identity: **C — Teal**, navy #082D4B and teal #009C9F. See [brand guide](BRAND.md) and [asset pack](assets/brand/). Preferred domain: **spencecom.ph** (availability reported by Amit; registration not confirmed).
 Brand endorsement: **Powered by Axon**, subject to confirming the actual commercial relationship.
 
 SpenceCom designs, installs and modernises business networks and smart workplaces in the Philippines. It connects physical infrastructure, business data, collaboration, cloud services and AI into practical systems that employees can use confidently.
