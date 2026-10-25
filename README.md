@@ -1,5 +1,17 @@
 # SpenceCom — Business and Website Blueprint
 
+**Version 1.2 | 26 October 2026 | Smart Home, Smart Office and AI-ready integration expansion**
+
+> **Your existing technology has more potential. We help unlock it.**
+>
+> Smart Homes. Connected Workplaces. AI-Ready Futures.
+
+**NEW: [Smart Living, Smart Office & AI-Ready Infrastructure — Full Service Catalogue](SMART-LIVING-AND-AI-SERVICES.md)**
+
+SpenceCom is a design-and-integration-led technology modernisation consultancy, not a conventional break-fix IT support shop. We upgrade viable existing networks, LAN, Wi-Fi, NAS, cloud and AV systems or design entirely new ones, adding useful automation and AI only where it provides real value. We welcome partnership with clients' existing IT and maintenance providers. **Free introductory consultation available.** Experience claims refer to consulting leadership, not the age of SpenceCom.
+
+# Original workplace and website blueprint (v1.1)
+
 Version 1.1 | 25 October 2026 | Teal identity selected
 
 ## 1. Brand and purpose
