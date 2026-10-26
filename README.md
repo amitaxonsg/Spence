@@ -1,5 +1,7 @@
 # SpenceCom — Business and Website Blueprint
 
+**Website implementation (27 October 2026):** See [WEBSITE-IMPLEMENTATION.md](WEBSITE-IMPLEMENTATION.md). The responsive, SEO-ready static website source is in `scripts/build.mjs` and `web/`; run `npm run build` to create the deployable `dist/` site. The confirmed full logo and favicon now come from Amit's 26 October approved image uploads. Production deployment to spencecom.ph is pending a separate server update.
+
 **Version 1.2 | 26 October 2026 | Smart Home, Smart Office and AI-ready integration expansion**
 
 > **Your existing technology has more potential. We help unlock it.**
