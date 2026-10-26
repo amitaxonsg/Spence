@@ -6,8 +6,13 @@ const port = Number(process.env.SPENCECOM_API_PORT || 4783);
 const host = '127.0.0.1';
 const model = process.env.SPENCECOM_OPENAI_MODEL || 'gpt-4o-mini';
 const keyPath = process.env.SPENCECOM_OPENAI_KEY_FILE || '/etc/spencecom/openai.key';
+const kimiKeyPath = process.env.SPENCECOM_KIMI_KEY_FILE || '/etc/spencecom/kimi.key';
+const kimiModel = process.env.SPENCECOM_KIMI_MODEL || 'kimi-k3.1-pro';
 const mailtrapPath = process.env.SPENCECOM_MAILTRAP_KEY_FILE || '/etc/spencecom/mailtrap.key';
 const apiKey = fs.existsSync(keyPath) ? fs.readFileSync(keyPath, 'utf8').trim() : '';
+const kimiKey = fs.existsSync(kimiKeyPath) ? fs.readFileSync(kimiKeyPath, 'utf8').trim() : '';
+const chatEnabled = process.env.SPENCECOM_CHAT_ENABLED === '1';
+const aiProvider = process.env.SPENCECOM_AI_PROVIDER || 'kimi';
 const mailtrapKey = fs.existsSync(mailtrapPath) ? fs.readFileSync(mailtrapPath, 'utf8').trim() : '';
 const mailtrapFrom = process.env.SPENCECOM_MAILTRAP_FROM || '';
 const mailtrapEnabled = Boolean(mailtrapKey && mailtrapFrom);
@@ -69,7 +74,7 @@ For project enquiries, quotations, sensitive issues or human follow-up, direct v
 Respond in the language used by the visitor (English or Tagalog). Keep answers generally under 160 words and include a directly relevant service URL when appropriate.`;
 
 async function chat(req, res, ip) {
-  if (!apiKey) return send(res, 503, { error: 'AI chat is being configured. Please contact support@spencecom.ph.' });
+  if (!chatEnabled || (!apiKey && !kimiKey)) return send(res, 503, { error: 'Spence AI chat is temporarily offline while the API is being configured. Please contact support@spencecom.ph.' });
   if (!rateLimit(ip, 'chat')) return send(res, 429, { error: 'Chat limit reached. Please try later or email support@spencecom.ph.' });
   const body = await readJSON(req);
   const message = typeof body.message === 'string' ? body.message.trim() : '';
@@ -78,18 +83,19 @@ async function chat(req, res, ip) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 20000);
   try {
-    const response = await fetch('https://api.openai.com/v1/responses', {
+    const useKimi = aiProvider === 'kimi' && Boolean(kimiKey);
+    const response = await fetch(useKimi ? 'https://api.moonshot.ai/v1/chat/completions' : 'https://api.openai.com/v1/responses', {
       method: 'POST',
-      headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ model, instructions, input: [...prior, { role:'user', content: message }], max_output_tokens: 450, store: false }),
+      headers: { authorization: `Bearer ${useKimi ? kimiKey : apiKey}`, 'content-type': 'application/json' },
+      body: useKimi ? JSON.stringify({ model:kimiModel, messages:[{role:'system',content:instructions},...prior,{role:'user',content:message}], max_tokens:450 }) : JSON.stringify({ model, instructions, input: [...prior, { role:'user', content: message }], max_output_tokens: 450, store: false }),
       signal: controller.signal
     });
     if (!response.ok) {
-      console.error('OpenAI request unsuccessful:', response.status);
+      console.error('AI provider request unsuccessful:', useKimi ? 'kimi' : 'openai', response.status);
       return send(res, 502, { error: 'Spence is temporarily unavailable. Please email support@spencecom.ph.' });
     }
     const data = await response.json();
-    const answer = data.output_text || (data.output || []).flatMap(x => x.content || []).filter(x => x.type === 'output_text').map(x => x.text).join('\n');
+    const answer = useKimi ? data.choices?.[0]?.message?.content : data.output_text || (data.output || []).flatMap(x => x.content || []).filter(x => x.type === 'output_text').map(x => x.text).join('\n');
     if (!answer) return send(res, 502, { error: 'No AI answer was returned. Please try again.' });
     return send(res, 200, { answer: String(answer).slice(0, 2400) });
   } catch (error) {
@@ -114,11 +120,11 @@ async function enquiry(req, res, ip) {
   if (!rateLimit(ip, 'enquiry')) return send(res, 429, { error: 'Too many enquiries. Please email support@spencecom.ph.' });
   const body = await readJSON(req);
   if (body.website) return send(res, 200, { ok: true }); // honeypot
-  const fields = ['name','email','company','location','service','message'];
+  const fields = ['name','email','company','location','service','preferred','message'];
   const info = Object.fromEntries(fields.map(k => [k, typeof body[k] === 'string' ? body[k].trim().slice(0, k === 'message' ? 4000 : 200) : '']));
   if (info.name.length < 2 || info.message.length < 15 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(info.email)) return send(res, 400, { error: 'Please provide your name, valid email and project description.' });
   const ref = `SPC-${Date.now().toString(36).toUpperCase()}`;
-  const substitute = text => text.replace(/{{\s*(\w+)\s*}}/g, (_m,k) => escapeHTML(({client_name:info.name,reference:ref,...info})[k] || 'Not provided'));
+  const substitute = text => text.replace(/{{\s*(\w+)\s*}}/g, (_m,k) => escapeHTML(({client_name:info.name,client_email:info.email,reference:ref,...info})[k] || 'Not provided'));
   const client = substitute(fs.readFileSync(new URL('client-acknowledgement.html', templateDir), 'utf8'));
   const team = substitute(fs.readFileSync(new URL('team-notification.html', templateDir), 'utf8'));
   try {
@@ -137,7 +143,7 @@ const server = http.createServer(async(req,res) => {
   const origin = req.headers.origin;
   if (origin && !['https://www.spencecom.ph','https://spencecom.ph'].includes(origin)) return send(res, 403, { error:'Forbidden origin' });
   const url = new URL(req.url || '/', 'http://localhost');
-  if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { ok:true, aiConfigured:Boolean(apiKey), emailConfigured:mailtrapEnabled });
+  if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { ok:true, aiReady:Boolean((aiProvider==='kimi'?kimiKey:apiKey) && chatEnabled), aiProvider, emailConfigured:mailtrapEnabled });
   if (req.method !== 'POST') return send(res, 405, { error:'Method not allowed' });
   const forwarded = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '');
   const ip = forwarded.split(',').at(-1).trim(); // Apache appends the actual client address.
@@ -148,4 +154,4 @@ const server = http.createServer(async(req,res) => {
   } catch(e) { return send(res,e.status || 500,{error:e.status ? e.message : 'Service temporarily unavailable'}); }
 });
 server.requestTimeout = 25000;
-server.listen(port,host,() => console.log(`SpenceCom API listening on ${host}:${port} model=${model} mail=${mailtrapEnabled?'configured':'disabled'}`));
+server.listen(port,host,() => console.log(`SpenceCom API listening on ${host}:${port} ai=${aiProvider} mail=${mailtrapEnabled?'configured':'disabled'}`));
