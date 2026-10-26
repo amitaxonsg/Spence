@@ -8,9 +8,12 @@ const model = process.env.SPENCECOM_OPENAI_MODEL || 'gpt-4o-mini';
 const keyPath = process.env.SPENCECOM_OPENAI_KEY_FILE || '/etc/spencecom/openai.key';
 const kimiKeyPath = process.env.SPENCECOM_KIMI_KEY_FILE || '/etc/spencecom/kimi.key';
 const kimiModel = process.env.SPENCECOM_KIMI_MODEL || 'kimi-k3';
+const seaLionKeyPath = process.env.SPENCECOM_SEALION_KEY_FILE || '/etc/spencecom/sealion.key';
+const seaLionModel = process.env.SPENCECOM_SEALION_MODEL || 'aisingapore/Gemma-SEA-LION-v4-27B-IT';
 const mailtrapPath = process.env.SPENCECOM_MAILTRAP_KEY_FILE || '/etc/spencecom/mailtrap.key';
 const apiKey = fs.existsSync(keyPath) ? fs.readFileSync(keyPath, 'utf8').trim() : '';
 const kimiKey = fs.existsSync(kimiKeyPath) ? fs.readFileSync(kimiKeyPath, 'utf8').trim() : '';
+const seaLionKey = fs.existsSync(seaLionKeyPath) ? fs.readFileSync(seaLionKeyPath, 'utf8').trim() : '';
 const chatEnabled = process.env.SPENCECOM_CHAT_ENABLED === '1';
 const aiProvider = process.env.SPENCECOM_AI_PROVIDER || 'kimi';
 const mailtrapKey = fs.existsSync(mailtrapPath) ? fs.readFileSync(mailtrapPath, 'utf8').trim() : '';
@@ -32,7 +35,11 @@ const services = [
   ['Cybersecurity, Backup & Business Continuity', '/solutions/cybersecurity-backup/'],
   ['Business Automation & System Integration', '/solutions/business-automation/'],
   ['Premium Smart Home & Residential Networks', '/solutions/smart-home/'],
-  ['Linux Desktops & Cloud-Ready Call Centre Workstations', '/solutions/linux-desktops-call-centers/']
+  ['Linux Mint Cinnamon Business Desktops & Cloud-Ready PCs', '/solutions/linux-desktops-call-centers/'],
+  ['Network Speed Diagnostics & Wi-Fi Audit', '/solutions/network-speed-diagnostics/'],
+  ['Proactive Network Monitoring & IT Health Checks', '/solutions/proactive-it-monitoring/'],
+  ['Existing CCTV & Biometric System Automation', '/solutions/cctv-biometric-automation/'],
+  ['AI-Enabled Call Centre & Customer Service Workflows', '/solutions/ai-call-center-workflows/']
 ];
 const allowedHosts = new Set(['spencecom.ph', 'www.spencecom.ph']);
 const hits = new Map();
@@ -76,37 +83,47 @@ When visitors report technical problems, help first. Ask brief targeted question
 Scope clarification: SpenceCom does not market standalone CCTV camera installation or traditional CCTV contracting. We integrate compatible existing CCTV/NVR cameras and biometric attendance or door-access systems into secure networks, smart-office automation, authorised alerts and reporting. Hardware supply, device integration and installation feasibility are assessed individually. Smart AI Meeting Rooms and conference AV are a separate service. Never tell a visitor we offer standalone CCTV installation.
 Linux desktop guidance: Linux Mint Cinnamon is a free-of-charge desktop OS with a familiar menu, panel and file manager, but is not identical to Windows. Offer existing-PC assessment and a free SpenceCom demonstration to offices, small businesses, schools, creative teams and call centres—not only contact centres. A third-party browser demo is https://distrosea.com/start/linuxmint-22.3-cinnamon/ and the official project is https://linuxmint.com/download.php; public demos are not for confidential data and do not prove hardware compatibility. Examples of Linux software: LibreOffice and ONLYOFFICE for documents, GIMP, Inkscape, Krita and Blender for creative work, supported Microsoft 365/Google Workspace browser apps, CRM and WebRTC where vendor-supported. Do not claim native desktop Microsoft Office or Adobe Creative Cloud work unchanged on Linux. For Windows-only accounting, CAD, macros, diallers, scanners and specialist tools, insist on application and peripheral pilot testing. Linux has no Windows OS licence fee, but paid apps, subscriptions, migration, hardware and IT support may still cost money. A slow PC is not guaranteed to become fast; assess SSD, memory, drivers and whether lighter Linux Xfce is preferable. Encourage legitimate software rather than piracy; offer a reversible pilot, file backup and staff training. Link https://www.spencecom.ph/solutions/linux-desktops-call-centers/ and invite the visitor to request a free demo.
 NAS, cloud and AI guidance: Many businesses use NAS merely for local file sharing; explain that a NAS centrally stores files and controls department access but does not protect against a site fire, flood, theft or ransomware if all copies remain on-premises. Propose encrypted, access-controlled, independently versioned or immutable offsite backup, a tested restore plan, and separately scoped file sync/cloud access (like a managed Dropbox-style workflow). Sync alone is NOT backup: deletion, corruption or ransomware can synchronise too. With approved sources and retrieval-time user permissions, a private AI assistant may search documents, cite sources, summarise approved files and draft messages. Sending emails or external actions require authorised user confirmation and audit trails. Discuss RAID honestly: RAID1 roughly halves raw two-disk capacity but improves availability after one disk failure; full-capacity single disk/JBOD/RAID0 has different failure exposure. Do not categorically reject RAID1 or promise cheap disk replacement and cloud resync will meet every business's recovery-time target. Compare RAID, capacity, backup, restore time, data transfer and cloud costs against the actual business criticality. Cloud backup is not automatically more secure than local; encryption, identity, retention, provider controls and tested restores determine security and resilience. Link https://www.spencecom.ph/solutions/smart-nas-storage/ and offer a free NAS and AI assessment with non-sensitive example documents.
+Diagnostic and AI adoption guidance: SpenceCom diagnoses before upgrading. For slow Wi-Fi despite a fast ISP plan, guide safe Ethernet tests at the router, switch port link-rate and Cat6 cable checks, AP interference and mesh backhaul checks before suggesting faster fibre or Wi-Fi 7. Link https://www.spencecom.ph/solutions/network-speed-diagnostics/ . The team can travel from Angeles City and Clark to Cebu, Manila, Davao and elsewhere in the Philippines for agreed on-site projects, subject to scope and logistics. For business AI, distinguish free public chatbots for non-sensitive work, managed paid business plans with governance, and private/local models connected to approved company knowledge. Do not claim any paid AI or local LLM is automatically secure; ask about permissions, data sensitivity, employee workflows and total costs. Link https://www.spencecom.ph/solutions/private-ai-chatbots/ .
 Respond in the language used by the visitor (English or Tagalog). Keep answers generally under 160 words and include a directly relevant service URL when appropriate.`;
 
 async function chat(req, res, ip) {
-  if (!chatEnabled || (!apiKey && !kimiKey)) return send(res, 503, { error: 'Spence AI chat is temporarily offline while the API is being configured. Please contact support@spencecom.ph.' });
+  if (!chatEnabled || (!apiKey && !kimiKey && !seaLionKey)) return send(res, 503, { error: 'Spence AI chat is temporarily offline while the API is being configured. Please contact support@spencecom.ph.' });
   if (!rateLimit(ip, 'chat')) return send(res, 429, { error: 'Chat limit reached. Please try later or email support@spencecom.ph.' });
   const body = await readJSON(req);
   const message = typeof body.message === 'string' ? body.message.trim() : '';
   if (!message || message.length > 1000) return send(res, 400, { error: 'Please enter a question of up to 1,000 characters.' });
   const prior = Array.isArray(body.history) ? body.history.slice(-4).filter(x => x && ['user', 'assistant'].includes(x.role) && typeof x.content === 'string').map(x => ({ role:x.role, content:x.content.slice(0, 800) })) : [];
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 60000);
   try {
-    const useKimi = aiProvider === 'kimi' && Boolean(kimiKey);
-    const response = await fetch(useKimi ? 'https://api.moonshot.ai/v1/chat/completions' : 'https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: { authorization: `Bearer ${useKimi ? kimiKey : apiKey}`, 'content-type': 'application/json' },
-      body: useKimi ? JSON.stringify({ model:kimiModel, messages:[{role:'system',content:instructions},...prior,{role:'user',content:message}], max_tokens:1200, reasoning_effort:'low' }) : JSON.stringify({ model, instructions, input: [...prior, { role:'user', content: message }], max_output_tokens: 450, store: false }),
-      signal: controller.signal
-    });
-    if (!response.ok) {
-      console.error('AI provider request unsuccessful:', useKimi ? 'kimi' : 'openai', response.status);
-      return send(res, 502, { error: 'Spence is temporarily unavailable. Please email support@spencecom.ph.' });
+    const providers = [...new Set([aiProvider,'sealion','openai','kimi'])];
+    for (const provider of providers) {
+      const useKimi = provider === 'kimi';
+      const useSeaLion = provider === 'sealion';
+      const credential = useKimi ? kimiKey : useSeaLion ? seaLionKey : provider === 'openai' ? apiKey : '';
+      if (!credential) continue;
+      try {
+        const response = await fetch(useSeaLion ? 'https://api.sea-lion.ai/v1/chat/completions' : useKimi ? 'https://api.moonshot.ai/v1/chat/completions' : 'https://api.openai.com/v1/responses', {
+          method: 'POST',
+          headers: { authorization: `Bearer ${credential}`, 'content-type': 'application/json' },
+          body: useSeaLion ? JSON.stringify({model:seaLionModel,messages:[{role:'system',content:instructions},...prior,{role:'user',content:message}],max_tokens:650,stream:false}) : useKimi ? JSON.stringify({ model:kimiModel, messages:[{role:'system',content:instructions},...prior,{role:'user',content:message}], max_tokens:1200, reasoning_effort:'low' }) : JSON.stringify({ model, instructions, input:[...prior,{role:'user',content:message}], max_output_tokens:450, store:false }),
+          signal: AbortSignal.timeout(23000)
+        });
+        if (!response.ok) {
+          console.error('AI provider request unsuccessful:', provider, response.status);
+          continue;
+        }
+        const data = await response.json();
+        const answer = useKimi || useSeaLion ? data.choices?.[0]?.message?.content : data.output_text || (data.output || []).flatMap(x => x.content || []).filter(x => x.type === 'output_text').map(x => x.text).join('\n');
+        if (answer) return send(res, 200, { answer:String(answer).slice(0,2400) });
+        console.error('AI provider returned no answer:', provider);
+      } catch (error) {
+        console.error('AI provider connection failed:', provider, error?.name || 'unknown', error?.cause?.code);
+      }
     }
-    const data = await response.json();
-    const answer = useKimi ? data.choices?.[0]?.message?.content : data.output_text || (data.output || []).flatMap(x => x.content || []).filter(x => x.type === 'output_text').map(x => x.text).join('\n');
-    if (!answer) return send(res, 502, { error: 'No AI answer was returned. Please try again.' });
-    return send(res, 200, { answer: String(answer).slice(0, 2400) });
+    return send(res, 502, { error: 'Spence is temporarily unavailable. Please email support@spencecom.ph.' });
   } catch (error) {
     console.error('Chat error:', error?.name || 'unknown', error?.message, error?.cause?.code);
     return send(res, 502, { error: 'Spence could not connect just now. Contact support@spencecom.ph.' });
-  } finally { clearTimeout(timer); }
+  }
 }
 
 const escapeHTML = v => String(v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -148,7 +165,7 @@ const server = http.createServer(async(req,res) => {
   const origin = req.headers.origin;
   if (origin && !['https://www.spencecom.ph','https://spencecom.ph'].includes(origin)) return send(res, 403, { error:'Forbidden origin' });
   const url = new URL(req.url || '/', 'http://localhost');
-  if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { ok:true, aiReady:Boolean((aiProvider==='kimi'?kimiKey:apiKey) && chatEnabled), aiProvider, emailConfigured:mailtrapEnabled });
+  if (req.method === 'GET' && url.pathname === '/health') return send(res, 200, { ok:true, aiReady:Boolean((seaLionKey || kimiKey || apiKey) && chatEnabled), aiProvider, emailConfigured:mailtrapEnabled });
   if (req.method !== 'POST') return send(res, 405, { error:'Method not allowed' });
   const forwarded = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '');
   const ip = forwarded.split(',').at(-1).trim(); // Apache appends the actual client address.
