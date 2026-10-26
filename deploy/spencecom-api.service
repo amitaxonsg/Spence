@@ -1,0 +1,32 @@
+[Unit]
+Description=SpenceCom Website Chat and Enquiry API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=spencecom
+Group=spencecom
+WorkingDirectory=/opt/spencecom-site
+Environment=SPENCECOM_API_PORT=4783
+Environment=SPENCECOM_OPENAI_KEY_FILE=/etc/spencecom/openai.key
+Environment=SPENCECOM_MAILTRAP_KEY_FILE=/etc/spencecom/mailtrap.key
+Environment=SPENCECOM_MAILTRAP_FROM=amit@axon.com.sg
+Environment=SPENCECOM_OPENAI_MODEL=gpt-4o-mini
+ExecStart=/usr/bin/node /opt/spencecom-site/backend/server.mjs
+Restart=on-failure
+RestartSec=4
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ProtectControlGroups=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+CapabilityBoundingSet=
+UMask=0027
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
