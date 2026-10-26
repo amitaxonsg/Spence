@@ -4,6 +4,7 @@ import crypto from 'node:crypto';
 
 const root=process.cwd(), out=path.join(root,'dist');
 const cssVersion=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'web','styles.css'))).digest('hex').slice(0,12);
+const jsVersion=crypto.createHash('sha256').update(fs.readFileSync(path.join(root,'web','app.js'))).digest('hex').slice(0,12);
 fs.mkdirSync(out,{recursive:true});
 const services=[
  ['business-network-infrastructure','Business Network & IT Infrastructure','Business network design, structured cabling, VLANs, routers, switches and infrastructure modernisation.','Business Network Installation & IT Infrastructure in the Philippines','Business networking and structured cabling in Angeles City, Clark, Pampanga and nationwide.'],
@@ -90,6 +91,7 @@ const breadcrumb=(items)=>`<div class="breadcrumbs container"><a href="/">Home</
 const contactCta=`<section class="contact-band"><div class="container band-grid"><div><span class="eyebrow light">LET'S MAKE TECHNOLOGY WORK HARDER</span><h2>Ready for an intelligent upgrade?</h2><p>Tell us what you have, what you need, and what you want to achieve. The initial consultation is free.</p></div><a class="button button-light" href="/contact/">Start a conversation <span>↗</span></a></div></section>`;
 function write(url,html){
  html=html.replace('</footer><script src="/app.js"',`</footer>${chatWidget}<script src="/app.js"`);
+ html=html.replace('<script src="/app.js" defer></script>',`<script src="/app.js?v=${jsVersion}" defer></script>`);
  // Route enquiries to the confirmed owner address until branded mail is commissioned.
  html=html.replaceAll('hello@spencecom.ph','amit@axon.com.sg');
  if(url==='contact'){

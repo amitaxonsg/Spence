@@ -11,7 +11,7 @@ WorkingDirectory=/opt/spencecom-site
 Environment=SPENCECOM_API_PORT=4783
 Environment=SPENCECOM_OPENAI_KEY_FILE=/etc/spencecom/openai.key
 Environment=SPENCECOM_KIMI_KEY_FILE=/etc/spencecom/kimi.key
-Environment=SPENCECOM_KIMI_MODEL=kimi-k3.1-pro
+Environment=SPENCECOM_KIMI_MODEL=kimi-k3
 Environment=SPENCECOM_AI_PROVIDER=kimi
 Environment=SPENCECOM_CHAT_ENABLED=1
 Environment=SPENCECOM_MAILTRAP_KEY_FILE=/etc/spencecom/mailtrap.key
