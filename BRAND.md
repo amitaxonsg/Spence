@@ -6,14 +6,16 @@ Selected by Amit on 25 October 2026.
 - Teal accent: #009C9F
 - Background: white
 - Wordmark: Spence in navy; Com in teal.
-- Supporting lines: INTERNATIONAL STANDARDS. / SMART WORKPLACE SOLUTIONS.
-- Preferred domain: spencecom.ph; availability reported by Amit, purchase not confirmed.
+- Header treatment: only the symbol and **SpenceCom** wordmark, without any tagline, on a transparent background. A subtle white glow may be used above a dark hero image.
+- Supporting lines from the original master are historical artwork only; do not reproduce them in the top header.
+- Canonical public domain: https://www.spencecom.ph/
 
 ## Assets
 
 All files are in assets/brand/.
 
 - spencecom-logo-teal.png: transparent horizontal logo master.
+- spencecom-header-clean.webp: transparent logo without supporting lines, for the top website header.
 - spencecom-icon-master.png: transparent square symbol master.
 - favicon.ico: 16, 32 and 48 pixel browser icon.
 - icon-16.png, icon-32.png, icon-48.png: browser PNG sizes.
@@ -40,4 +42,4 @@ Generated raster identity assets; not editable vector artwork. Master geometry c
 <meta name="twitter:card" content="summary_large_image">
 ```
 
-Use these URLs only once the domain and assets are deployed. International Standards is a brand positioning statement, not a certification claim. Website not deployed by this asset update.
+International experience is a positioning statement, not a certification claim. See `SOCIAL-MEDIA-LAUNCH.md` for approved social identity, bios, launch copy and Google Business Profile setup.

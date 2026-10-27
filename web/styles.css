@@ -81,3 +81,6 @@
 .home-service-grid .service-end-card .button{margin-top:12px}
 .service-complete-note{color:#456373;font-size:.9rem;font-weight:700}
 @media(max-width:750px){.home-service-grid .service-end-card{grid-column:1/-1;min-height:300px;padding:30px 26px}}
+.header .brand{background:transparent!important;padding:0!important;border-radius:0!important}
+.header .brand img{width:247px;max-height:76px;object-fit:contain;object-position:left center;background:transparent}
+.header.on-hero .brand img{filter:drop-shadow(0 0 2px rgba(255,255,255,1)) drop-shadow(0 0 8px rgba(255,255,255,.85)) drop-shadow(0 0 16px rgba(255,255,255,.45))}
