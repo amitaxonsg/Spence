@@ -84,5 +84,6 @@
 .header .brand{background:transparent!important;padding:0!important;border-radius:0!important}
 .header .brand img{width:247px;max-height:76px;object-fit:contain;object-position:left center;background:transparent}
 .header .brand img{width:300px;max-height:84px;object-fit:contain;object-position:left center}
-.header.on-hero .brand img{filter:drop-shadow(.55px 0 0 rgba(255,255,255,.94)) drop-shadow(-.55px 0 0 rgba(255,255,255,.94)) drop-shadow(0 .55px 0 rgba(255,255,255,.94)) drop-shadow(0 -.55px 0 rgba(255,255,255,.94))}
+.header.on-hero .brand img{filter:brightness(1.65) drop-shadow(0 -1px 0 rgba(255,255,255,.35)) drop-shadow(0 2px 1px rgba(0,0,0,.7))}
+.header.on-hero{background:rgba(4,24,40,.30)!important;backdrop-filter:blur(8px)}
 @media(max-width:760px){.header .brand img{width:210px;max-height:67px}}
