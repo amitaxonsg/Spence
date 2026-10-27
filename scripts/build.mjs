@@ -129,7 +129,7 @@ const icon='/assets/brand/icon-192.png';
 const link=(slug,label)=>`<a href="${slug}">${esc(label)}<span aria-hidden="true">↗</span></a>`;
 const serviceIcons=['⌁','◉','▦','☁','✉','▤','▧','✦','▣','◇','⟲','⌂','▥','⌘','◈'];
 const serviceCards=services.map(([slug,name,desc],i)=>`<a class="service-card reveal" href="/solutions/${slug}/"><span class="card-number">${String(i+1).padStart(2,'0')}</span><span class="card-icon" aria-hidden="true">${serviceIcons[i%serviceIcons.length]}</span><h3>${esc(name)}</h3><p>${esc(desc)}</p><span class="card-arrow">Explore solution ↗</span></a>`).join('');
-const nav=`<nav class="nav container" aria-label="Primary"><a class="brand" href="/" aria-label="SpenceCom home"><img src="${headerLogo}" alt="SpenceCom" width="360" height="120" /></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Toggle menu"><span></span><span></span></button><div class="nav-links" id="site-menu"><details class="nav-dropdown"><summary>Solutions <span aria-hidden="true">⌄</span></summary><div class="nav-dropdown-panel"><a href="/solutions/"><strong>All Services</strong></a>${services.map(([slug,name])=>`<a href="/solutions/${slug}/">${esc(name)}</a>`).join('')}<a href="/equipment-solutions/">Equipment & Solutions Catalogue</a></div></details><a href="/service-areas/">Where We Work</a><a href="/about/">About Us</a><a href="/insights/">Insights</a><a class="nav-cta" href="/contact/">Let's Talk <span>↗</span></a></div></nav>`;
+const nav=`<nav class="nav container" aria-label="Primary"><a class="brand" href="/" aria-label="SpenceCom home"><img src="${headerLogo}" alt="SpenceCom" width="360" height="120" /></a><button class="menu-toggle" aria-expanded="false" aria-controls="site-menu" aria-label="Toggle menu"><span></span><span></span></button><div class="nav-links" id="site-menu"><a href="/">Home</a><details class="nav-dropdown"><summary>Solutions <span aria-hidden="true">⌄</span></summary><div class="nav-dropdown-panel"><a href="/solutions/"><strong>All Services</strong></a>${services.map(([slug,name])=>`<a href="/solutions/${slug}/">${esc(name)}</a>`).join('')}<a href="/equipment-solutions/">Equipment & Solutions Catalogue</a></div></details><a href="/service-areas/">Where We Work</a><a href="/about/">About Us</a><a href="/insights/">Insights</a><a class="nav-cta" href="/contact/">Let's Talk <span>↗</span></a></div></nav>`;
 const footer=`<footer class="footer"><div class="container footer-grid"><div><img class="footer-logo" src="${logo}" alt="SpenceCom" width="300" height="100"/><p>On-site business networks, Wi-Fi, NAS, smart workplaces, cloud and AI. Angeles City · Clark · Philippines nationwide · Remote worldwide.</p><p class="heritage">Backed by <a href="https://axon.com.sg/" rel="noopener">Axon 1Pro</a> — Singapore technology experience since 2002.</p></div><div><h3>Explore</h3><a href="/solutions/">Our Solutions</a><a href="/equipment-solutions/">Equipment & Solutions</a><a href="/service-areas/">Service Areas</a><a href="/about/">Our Approach</a><a href="/insights/">Insights</a></div><div><h3>Connect</h3><a href="/contact/">Request a consultation</a><a href="mailto:support@spencecom.ph">✉ support@spencecom.ph</a><a href="https://wa.me/639614044560" target="_blank" rel="noopener">◉ WhatsApp our team</a><span>Angeles City · Clark · Philippines</span></div></div><div class="container footer-bottom"><span>© ${new Date().getUTCFullYear()} SpenceCom. All rights reserved.</span><span>Philippines nationwide · Remote worldwide</span></div></footer>`;
 const chatWidget=`<div class="spence-chat" id="spence-chat"><button class="chat-launch" id="chat-launch" aria-expanded="false" aria-controls="chat-panel" type="button"><span aria-hidden="true">✦</span> Chat with Spence <small>AI Agent</small></button><section class="chat-panel" id="chat-panel" aria-label="Chat with Spence AI Agent" hidden><div class="chat-heading"><div><strong>Chat with Spence</strong><span>SpenceCom AI Agent · Technical questions &amp; solutions</span></div><button type="button" id="chat-close" aria-label="Close chat">×</button></div><div class="chat-feed" id="chat-feed" role="log" aria-live="polite"><div class="chat-bubble agent">Hi! I'm Spence, the SpenceCom AI Agent. Ask me about Wi-Fi, networking, NAS, cloud, smart offices, AI meeting rooms or our services in English or Tagalog.</div></div><form id="chat-form" class="chat-form"><label for="chat-question" class="sr-only">Ask Spence</label><input id="chat-question" name="question" type="text" maxlength="1000" required placeholder="Ask your technology question…" autocomplete="off"><button type="submit" aria-label="Send question">↗</button></form><p class="chat-disclaimer">AI answers may be imperfect. Don't enter passwords or sensitive data. <a href="mailto:support@spencecom.ph">Email support</a> · <a href="/contact/">Request a consultation</a></p></section></div>`;
 const org={ '@context':'https://schema.org','@type':'Organization',name:'SpenceCom',url:base,logo:base+logo,description:'Smart workplace, cloud, networks and private AI integration based in Angeles City and Clark, serving the Philippines nationwide and remote clients worldwide.',areaServed:[{'@type':'Country',name:'Philippines'},{'@type':'Place',name:'Worldwide remote services'}]};
@@ -151,6 +151,32 @@ const navGroups=[
 ];
 const groupedNav=`<div class="nav-dropdown-panel nav-dropdown-groups"><a class="nav-all" href="/solutions/">View all ${services.length} services</a>${navGroups.map(([title,slugs])=>`<div class="nav-group"><h3>${esc(title)}</h3>${slugs.map(slug=>{const item=services.find(s=>s[0]===slug);return item?`<a href="/solutions/${slug}/">${esc(item[1])}</a>`:''}).join('')}</div>`).join('')}<a class="nav-catalogue" href="/equipment-solutions/">Equipment & Solutions Catalogue</a></div>`;
 const contactCta=`<section class="contact-band"><div class="container band-grid"><div><span class="eyebrow light">LET'S MAKE TECHNOLOGY WORK HARDER</span><h2>Ready for an intelligent upgrade?</h2><p>Tell us what you have, what you need, and what you want to achieve. The initial consultation is free.</p></div><a class="button button-light" href="/contact/">Start a conversation <span>↗</span></a></div></section>`;
+// Explicit editorial imagery avoids unrelated AI/office visuals on technical guides.
+const insightVisuals={
+ 'office-wifi-upgrade':['enterprise-wifi.webp','Ceiling-mounted business Wi-Fi access point and coverage planning','smart-wifi-mesh'],
+ 'microsoft-google-email-migration':['cloud-email-migration.webp','Business cloud email and document migration workflow','business-email-migration'],
+ 'nas-cloud-private-ai':['private-ai-cloud.webp','Private AI knowledge service connected to approved cloud files','smart-nas-storage'],
+ 'traditional-vs-modern-business-network':['network-infrastructure.webp','Managed business switches and structured LAN connectivity','business-network-infrastructure'],
+ 'traditional-vs-modern-office':['smart-office-automation.webp','Connected smart workplace with centrally integrated systems','smart-office'],
+ 'traditional-vs-modern-wifi':['enterprise-wifi.webp','Managed Wi-Fi equipment for reliable business coverage','smart-wifi-mesh'],
+ 'traditional-backup-vs-modern-resilience':['network-infrastructure.webp','Business network infrastructure supporting storage and recovery','cybersecurity-backup'],
+ 'linux-vs-windows-call-center':['linux-mint-cinnamon-official.jpg','Linux Mint Cinnamon desktop software interface','linux-desktops-call-centers'],
+ 'traditional-support-vs-ai-operations':['network-infrastructure.webp','Professional network infrastructure for proactive IT monitoring','proactive-it-monitoring'],
+ 'free-chatbots-vs-private-business-ai':['private-ai-cloud.webp','Private company AI assistant and cloud knowledge integration','private-ai-chatbots'],
+ 'managed-hotel-condo-wifi':['hospitality-managed-wifi.webp','Managed Wi-Fi access across a hotel or condominium property','managed-hospitality-wifi'],
+ 'smart-ai-meeting-room-checklist':['smart-ai-meeting-room.webp','Modern AI-ready conference room with interactive displays','smart-meeting-rooms'],
+ 'smart-office-vs-automated-office':['smart-office-automation.webp','Smart office sensors lighting and automated workplace controls','smart-office'],
+ 'cloud-server-migration-with-rollback':['private-ai-cloud.webp','Cloud computing infrastructure for business applications','cloud-servers'],
+ 'business-cybersecurity-and-recovery':['network-infrastructure.webp','Secured business infrastructure and network equipment','cybersecurity-backup'],
+ 'small-business-workflow-automation':['smart-office-automation.webp','Integrated office devices and automated business workflows','business-automation'],
+ 'smart-home-business-grade-network':['enterprise-wifi.webp','Professional managed wireless networking for a smart property','smart-home'],
+ 'cctv-biometric-automation-integration':['smart-office-automation.webp','Connected office access controls and building automation','cctv-biometric-automation'],
+ 'slow-fibre-internet-network-bottlenecks':['network-infrastructure.webp','Ethernet switch and wired network connections to diagnose','network-speed-diagnostics'],
+ 'proactive-monitoring-business-network':['network-infrastructure.webp','Managed network equipment monitored for business reliability','proactive-it-monitoring'],
+ 'ai-call-centre-automation-safely':['private-ai-cloud.webp','Business AI assistant used in a controlled workflow','ai-call-center-workflows'],
+ 'google-workspace-to-cloud-workflows':['cloud-email-migration.webp','Cloud email and workplace collaboration migration','google-workspace'],
+ 'microsoft-365-sharepoint-governance':['cloud-email-migration.webp','Microsoft 365 workplace documents and cloud collaboration','microsoft-365']
+};
 function write(url,html){
  html=html.replace(/<div class="nav-dropdown-panel">[\s\S]*?<\/div><\/details>/,`${groupedNav}</details>`);
  html=html.replace('</footer><script src="/app.js"',`</footer>${chatWidget}<script src="/app.js"`);
@@ -167,6 +193,7 @@ function write(url,html){
  }
  if(url==='about'){
   html=html.replace('<div class="team-portrait team-coming"><span>PHOTO<br>COMING SOON</span></div><div class="team-card-copy"><span>FIELD TECHNICIAN', '<div class="team-portrait"><img src="/assets/images/team-dharul.webp" alt="Dharul performing on-site network cabling work for SpenceCom" loading="lazy" width="700" height="933"/></div><div class="team-card-copy"><span>FIELD TECHNICIAN');
+  html=html.replace('<div class="team-portrait team-coming"><span>PHOTO<br>COMING SOON</span></div><div class="team-card-copy"><span>TECHNICAL SUPPORT', '<div class="team-portrait"><img src="/assets/images/team-aldrian.webp" alt="Aldrian, SpenceCom technical support team member" loading="lazy" width="640" height="640"/></div><div class="team-card-copy"><span>TECHNICAL SUPPORT');
  }
  if(url==='equipment-solutions'){
   let i=0;
@@ -174,8 +201,8 @@ function write(url,html){
  }
  if(url==='insights'){
   html=html.replace(/(<a class="insight-card" href="\/insights\/([^/]+)\/">)/g,(_,tag,slug)=>{
-   const photo=/wifi/.test(slug)?'enterprise-wifi.webp':/network|backup|resilience/.test(slug)?'network-infrastructure.webp':/office/.test(slug)?'smart-workplace.webp':'private-ai-cloud.webp';
-   return `${tag}<img loading="lazy" decoding="async" src="/assets/images/${photo}" width="520" height="315" alt="${esc(slug.replaceAll('-',' '))} technology visual"/>`;
+   const [photo,alt]=insightVisuals[slug]||['smart-workplace.webp','Modern integrated workplace technology'];
+   return `${tag}<img loading="lazy" decoding="async" src="/assets/images/${photo}" width="520" height="315" alt="${esc(alt)}"/>`;
   });
  }
  if(url.startsWith('solutions/')){
@@ -253,9 +280,16 @@ function write(url,html){
   }
  }
  if(url.startsWith('insights/')){
-  const photo=/wifi/.test(url)?'enterprise-wifi.webp':/nas|ai/.test(url)?'private-ai-cloud.webp':'smart-workplace.webp';
-  const visual=`<figure class="service-visual container"><img loading="lazy" decoding="async" src="/assets/images/${photo}" width="1440" height="810" alt="Business technology comparison and modernisation visual"/></figure>`;
+  const articleSlug=url.split('/')[1];
+  const [photo,alt,serviceSlug]=insightVisuals[articleSlug]||['smart-workplace.webp','Modern integrated workplace technology','business-automation'];
+  const visual=`<figure class="service-visual container"><img loading="lazy" decoding="async" src="/assets/images/${photo}" width="1440" height="810" alt="${esc(alt)}"/><figcaption>Illustrative technology visual. Real equipment and layouts depend on the site assessment.</figcaption></figure>`;
   html=html.replace('</section><section class="section">',`</section>${visual}<section class="section">`);
+  const checklist=insightPlaybooks[articleSlug];
+  if(checklist){
+   const related=services.find(s=>s[0]===serviceSlug);
+   const tailored=`<h3>What to check in your environment</h3><ol class="rollout-steps">${checklist.map((item,i)=>`<li><strong>${String(i+1).padStart(2,'0')}</strong><span>${esc(item)}</span></li>`).join('')}</ol><p>Need help evaluating the next step? <a href="/solutions/${serviceSlug}/">Explore ${esc(related?.[1]||'the related SpenceCom service')}</a>, or <a href="/contact/">request a free initial consultation</a>.</p><h3>Project fundamentals</h3>`;
+   html=html.replace('<h3>A practical checklist</h3>',tailored);
+  }
   const comparison=comparisons[url.split('/')[1]];
   if(comparison){
    const compare=`<div class="comparison-grid"><section><span class="eyebrow">CONVENTIONAL APPROACH</span><h3>Traditional setup</h3><p>${esc(comparison[0])}</p></section><section><span class="eyebrow">INTEGRATED APPROACH</span><h3>Modern approach</h3><p>${esc(comparison[1])}</p></section></div><p class="lead">${esc(comparison[2])}</p>`;
@@ -332,8 +366,46 @@ const articles=[
  ['traditional-backup-vs-modern-resilience','USB Backup vs Modern NAS, Snapshots and Offsite Recovery','Why a single external drive is not a complete recovery strategy, and how snapshots, immutable copies, offsite replication and test restores improve resilience.'],
  ['linux-vs-windows-call-center','Linux Desktop vs Windows Licensing for Call Centres','Assess when Linux Mint Cinnamon, browser-based CRM, VoIP and cloud desktops can reduce OS licence costs—and when Windows compatibility is essential.'],
  ['traditional-support-vs-ai-operations','Reactive IT Support vs Proactive Monitoring and AI Assistance','Compare break-fix support with monitored infrastructure, documented workflows, permission-aware assistants and human escalation.']
- ,['free-chatbots-vs-private-business-ai','Free ChatGPT, Claude or Gemini vs Private Company AI','When free chatbots are suitable, when managed paid AI helps, and how private or local models can search approved company knowledge safely.']
+ ,['free-chatbots-vs-private-business-ai','Free ChatGPT, Claude or Gemini vs Private Company AI','When free chatbots are suitable, when managed paid AI helps, and how private or local models can search approved company knowledge safely.'],
+ ['managed-hotel-condo-wifi','Managed Wi-Fi for Hotels, Condos and Serviced Apartments','How a property manager can monitor access points, guest networks and internet performance across buildings from one dashboard.'],
+ ['smart-ai-meeting-room-checklist','Smart AI Meeting Room: Camera, Audio, Display and AI Checklist','Build a room where remote participants can see, hear and collaborate—and assess privacy before enabling transcripts or AI notes.'],
+ ['smart-office-vs-automated-office','Smart Office Automation: What to Connect First','Prioritise occupancy sensors, booking panels, energy monitoring and access control around real employee workflows.'],
+ ['cloud-server-migration-with-rollback','Cloud Server Migration Without Surprises','A practical sequence for moving business applications to a VPS or cloud server with backups, testing and a rollback plan.'],
+ ['business-cybersecurity-and-recovery','Cybersecurity and Recovery Planning for Philippine SMEs','Secure identities, segmented networks and tested independent backups before a compromised account or ransomware event becomes a crisis.'],
+ ['small-business-workflow-automation','Five Business Workflows Worth Automating Before Buying More Software','Identify repetitive approvals, reminders, file routing, forms and reporting that can be connected with existing systems.'],
+ ['smart-home-business-grade-network','Smart Homes Need Business-Grade Networking Too','Smart devices, streaming, work-from-home calls and home NAS work best on reliable Wi-Fi with sensible IoT separation.'],
+ ['cctv-biometric-automation-integration','Connect Existing CCTV and Biometric Systems to Useful Workflows','Integrate supported alarms, attendance and access events with notifications and reports without replacing working cameras.'],
+ ['slow-fibre-internet-network-bottlenecks','Fast Fibre but Slow Office Network? Find the Bottleneck','Why an old switch, damaged cable or congested access point can waste a fast fibre connection—and what to measure first.'],
+ ['proactive-monitoring-business-network','Proactive IT Monitoring: Know About Problems Before Staff Call','Define meaningful alerts for WAN, switches, Wi-Fi, NAS, servers and backup jobs, backed by a clear response process.'],
+ ['ai-call-centre-automation-safely','AI for Call Centres: Agent Assist, QA and Responsible Automation','Use call summaries, guided knowledge and quality review with consent, human oversight and integration checks.'],
+ ['google-workspace-to-cloud-workflows','Google Workspace Beyond Gmail: Drive, Identity and Automation','Improve shared-drive governance, permissions, onboarding and automation without unnecessary migration or duplicate systems.'],
+ ['microsoft-365-sharepoint-governance','Microsoft 365 and SharePoint: Structure Before You Migrate','Plan Teams, SharePoint permissions, OneDrive, mail and device access before moving files and training employees.']
 ];
+const insightPlaybooks={
+ 'office-wifi-upgrade':['Map rooms, wall materials, floors and the actual number of devices at peak use.','Test wired uplinks, PoE budgets and interference before buying faster access points.','Pilot roaming and guest isolation, then validate throughput in hard-to-reach areas.'],
+ 'microsoft-google-email-migration':['Inventory mailboxes, aliases, calendars, shared drives and identity dependencies.','Prepare DNS, MFA, coexistence and staged test accounts before switching mail flow.','Validate migrated items, client devices and user training with a rollback window.'],
+ 'nas-cloud-private-ai':['Classify NAS folders and identify which files each employee is permitted to search.','Separate synchronisation from independent, versioned offsite backup and test a restore.','Pilot permission-aware AI answers with document citations and access-denial tests.'],
+ 'traditional-vs-modern-business-network':['Record switch port speeds, cabling paths, topology and existing single points of failure.','Design VLANs for staff, guests, IoT and management with explicit firewall rules.','Baseline throughput, failover and monitoring before accepting the new configuration.'],
+ 'traditional-vs-modern-office':['Map repetitive staff tasks and meeting-room frustrations before selecting hardware.','Prioritise integrations that join calendars, access, devices and cloud files securely.','Measure employee adoption and time saved after a staged rollout.'],
+ 'traditional-vs-modern-wifi':['Survey signal, channel use and concurrent device density at busy hours.','Check wired backhaul, roaming settings, guest policies and switch uplinks.','Measure user experience before and after changes at the same test locations.'],
+ 'traditional-backup-vs-modern-resilience':['Classify critical files and agree how much data loss and downtime is tolerable.','Keep independent versioned offsite copies; RAID and cloud sync alone are not backup.','Perform a documented restore test using a separate account and system.'],
+ 'linux-vs-windows-call-center':['Inventory the exact CRM, dialler, headset, printer and recording dependencies.','Pilot Linux Mint Cinnamon with sample users and vendor-supported browsers.','Compare migration and support costs against licences and application compatibility.'],
+ 'traditional-support-vs-ai-operations':['Review recurrent incidents, network logs and undocumented fixes.','Introduce actionable monitoring thresholds and clear human escalation ownership.','Use permission-controlled AI knowledge only after source quality and privacy testing.'],
+ 'free-chatbots-vs-private-business-ai':['Classify confidential data before allowing any AI provider or employee account to process it.','Compare contractual controls, managed identity, cost, retention and local infrastructure needs.','Pilot source-cited answers and human approval of outgoing actions.'],
+ 'managed-hotel-condo-wifi':['Survey rooms, corridors, floors and peak guest or resident density.','Separate guests, residents, operations and IoT while planning central controller access.','Test roaming, bandwidth policy and remote fault alerts from the management office.'],
+ 'smart-ai-meeting-room-checklist':['Test far-end speech pickup, camera framing, lighting and room acoustics.','Validate wireless presentation and the actual Teams, Meet or Zoom platform in use.','Check participant consent, retention settings and licensing before AI transcription.'],
+ 'smart-office-vs-automated-office':['Choose a measurable pain point such as wasted lighting or double-booked rooms.','Review sensor placement, manual overrides, power and segmented IoT networking.','Pilot one floor or zone and compare outcomes before expansion.'],
+ 'cloud-server-migration-with-rollback':['Map application dependencies, IP/DNS, licences, backups and storage performance.','Build a tested staging copy and identify the exact point at which rollback remains possible.','Validate users, performance, monitoring and restore procedures after cutover.'],
+ 'business-cybersecurity-and-recovery':['Enable strong identity controls and inventory privileged accounts and exposed services.','Separate administrative, staff and IoT traffic and patch supported systems.','Keep independent recoverable backups and rehearse incident communication and restoration.'],
+ 'small-business-workflow-automation':['Measure one repetitive task, its hand-offs, exception cases and time spent.','Connect existing forms, documents and approvals using least-privilege integration.','Keep an approval checkpoint and compare manual versus automated error rates.'],
+ 'smart-home-business-grade-network':['Map wireless coverage and distinguish working devices from IoT gadgets.','Separate guest and IoT connectivity, and check wired uplinks for key equipment.','Document access and recovery so home automation continues during outages.'],
+ 'cctv-biometric-automation-integration':['Inventory the existing camera, NVR, access and time-attendance systems and supported APIs.','Define approved events, notification recipients and employee privacy boundaries.','Pilot a non-disruptive integration with audit logs and manual fail-safe operation.'],
+ 'slow-fibre-internet-network-bottlenecks':['Test wired speed at the router and again after each switch segment.','Look for 100 Mbps negotiation, bad terminations, saturated ports and wireless interference.','Apply safe corrections then retest before changing an ISP package.'],
+ 'proactive-monitoring-business-network':['Identify the equipment and services whose failure most affects operations.','Set meaningful alerts with escalation thresholds rather than constant noisy notifications.','Review trends and incident response outcomes every month.'],
+ 'ai-call-centre-automation-safely':['Choose approved use cases such as summaries, agent assistance and knowledge retrieval.','Validate recording consent, personal-data handling and human review of AI outputs.','Measure quality and resolution time without allowing untested automatic decisions.'],
+ 'google-workspace-to-cloud-workflows':['Audit Shared Drives, personal ownership, external sharing and MFA.','Standardise permissions, group onboarding and document lifecycle rules.','Automate a reversible process with admin visibility and staff training.'],
+ 'microsoft-365-sharepoint-governance':['Plan Teams and SharePoint site ownership, group permissions and retention first.','Pilot file migration, search, sharing restrictions and device sign-in.','Validate access with different employees before publishing department libraries.']
+};
 const comparisons={
  'traditional-vs-modern-business-network':['Traditional: unmanaged switches, one flat network, ad hoc cables, a single router and no visibility into bottlenecks.','Modern: managed PoE and multi-gigabit switches, documented Cat6A, VLAN separation for staff/guests/IoT, dual-WAN resilience and centrally monitored performance.','Best first step: audit switch capabilities, cabling, traffic, WAN failover and segmentation needs.'],
  'traditional-vs-modern-office':['Traditional: meeting rooms with tangled HDMI cables, stand-alone displays, manual visitor handling and files scattered across local PCs.','Modern: unified conferencing, wireless presentation, calendar-connected rooms, smart energy and access systems, cloud collaboration and useful workflow automation.','Best first step: map high-friction tasks, meeting-room use and user adoption before purchasing devices.'],
