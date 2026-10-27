@@ -83,8 +83,4 @@
 @media(max-width:750px){.home-service-grid .service-end-card{grid-column:1/-1;min-height:300px;padding:30px 26px}}
 .header .brand{background:transparent!important;padding:0!important;border-radius:0!important}
 .header .brand img{width:247px;max-height:76px;object-fit:contain;object-position:left center;background:transparent}
-.header .brand img{width:300px;max-height:84px;object-fit:contain;object-position:left center}
-.header.on-hero .brand img{filter:brightness(1.65) drop-shadow(0 -1px 0 rgba(255,255,255,.35)) drop-shadow(0 2px 1px rgba(0,0,0,.7))}
-.header.on-hero{background:rgba(4,24,40,.30)!important;backdrop-filter:blur(8px)}
-.hero-bg{background-image:url('/assets/images/spencecom-smart-workplace-hero.webp');background-position:center 56%}
-@media(max-width:760px){.header .brand img{width:210px;max-height:67px}}
+.header.on-hero .brand img{filter:drop-shadow(0 0 2px rgba(255,255,255,1)) drop-shadow(0 0 8px rgba(255,255,255,.85)) drop-shadow(0 0 16px rgba(255,255,255,.45))}
